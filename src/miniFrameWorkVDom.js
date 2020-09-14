@@ -6,20 +6,20 @@ const traverseVDom = (startNode) => {
     return document.createDocumentFragment();
   }
 
-  if (typeof startNode === "string") {
+  if (typeof startNode === 'string') {
     return document.createTextNode(startNode);
   }
 
   const { element, props, children, nodeTrackId: trackingId } = startNode;
 
   const domElement = document.createElement(element);
-  domElement.setAttribute("data-node-track-id", trackingId);
+  domElement.setAttribute('data-node-track-id', trackingId);
 
   if (props) {
     Object.keys(props)
-      .filter((key) => key !== "children")
+      .filter((key) => key !== 'children')
       .forEach((key) => {
-        if (key.startsWith("on")) {
+        if (key.startsWith('on')) {
           domElement[key] = props[key];
         } else {
           domElement.setAttribute(key, props[key]);
@@ -31,7 +31,7 @@ const traverseVDom = (startNode) => {
       children.forEach((child) => {
         domElement.appendChild(traverseVDom(child));
       });
-    } else if (typeof children === "string") {
+    } else if (typeof children === 'string') {
       domElement.appendChild(document.createTextNode(children));
     } else {
       domElement.appendChild(traverseVDom(children));
@@ -60,7 +60,7 @@ export const markup = (elementType, props, children) => {
     const instance = new elementType(actualProps);
     instance.props = actualProps;
     return instance.render();
-  } else if (typeof elementType === "function") {
+  } else if (typeof elementType === 'function') {
     return elementType(actualProps);
   }
 

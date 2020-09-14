@@ -1,18 +1,14 @@
-import {
-  renderTree,
-  markup,
-  StatefulComponent,
-} from "./src/miniFrameWorkVDOM.js";
+import { renderTree, markup, StatefulComponent } from './src/miniFrameWorkVDOM.js';
 
 const componentBorderStyle =
-  "border: 1px solid #ccc;margin: 20px 0; padding: 10px;border-radius: 4px;background: #fff;";
+  'border: 1px solid #ccc;margin: 20px 0; padding: 10px;border-radius: 4px;background: #fff;';
 
 class ClassComponent extends StatefulComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      text: "",
+      text: '',
     };
   }
 
@@ -27,43 +23,39 @@ class ClassComponent extends StatefulComponent {
     const { children } = this.props;
 
     return markup(
-      "div",
+      'div',
       {
         style: componentBorderStyle,
       },
       [
-        markup(
-          "div",
-          null,
-          markup("strong", null, "This component has state!")
-        ),
-        markup("input", {
-          type: "text",
+        markup('div', null, markup('strong', null, 'This component has state!')),
+        markup('input', {
+          type: 'text',
           oninput: (e) => {
             this.onInput(e.target.value);
           },
         }),
-        markup("p", null, text),
-        markup("div", null, [
-          markup("div", null, ["Custom children in class component", children]),
+        markup('p', null, text),
+        markup('div', null, [
+          markup('div', null, ['Custom children in class component', children]),
         ]),
-      ]
+      ],
     );
   }
 }
 
 const ComponentWithChildren = ({ children }) => {
   return markup(
-    "div",
+    'div',
     {
       style: componentBorderStyle,
     },
-    [markup("h1", null, "Children in component"), children]
+    [markup('h1', null, 'Children in component'), children],
   );
 };
 
 const ListItem = ({ number }) => {
-  return markup("li", null, `Number: ${number}`);
+  return markup('li', null, `Number: ${number}`);
 };
 
 const MainComponent = () => {
@@ -73,22 +65,14 @@ const MainComponent = () => {
     listItems.push(markup(ListItem, { number: i }));
   }
 
-  const child1 = markup("h2", null, "I am child 1");
-  const child2 = markup("h3", null, "I am child 2");
+  const child1 = markup('h2', null, 'I am child 1');
+  const child2 = markup('h3', null, 'I am child 2');
 
-  return markup("div", null, [
-    markup(
-      "h1",
-      { style: "color: #444;" },
-      "This is the vdom experiment test page!"
-    ),
-    markup(
-      "ul",
-      { style: `${componentBorderStyle}list-style: none;` },
-      listItems
-    ),
+  return markup('div', null, [
+    markup('h1', { style: 'color: #444;' }, 'This is the vdom experiment test page!'),
+    markup('ul', { style: `${componentBorderStyle}list-style: none;` }, listItems),
     null,
-    "I am a simple string passed as child",
+    'I am a simple string passed as child',
     markup(ClassComponent, null, child1),
     markup(ComponentWithChildren, null, child1),
     markup(ComponentWithChildren, null, child2),
@@ -96,5 +80,5 @@ const MainComponent = () => {
 };
 
 const start = Date.now();
-renderTree(document.getElementById("app-root"), markup(MainComponent, null));
-console.log("Initial render took", Date.now() - start, "ms");
+renderTree(document.getElementById('app-root'), markup(MainComponent, null));
+console.log('Initial render took', Date.now() - start, 'ms');
