@@ -13,12 +13,10 @@ export function createComponent(vdomNode) {
 }
 
 class CustomComponent {
-  vdomNode = null;
-  renderedComponent = null;
-  instance = null;
-
   constructor(vdomNode) {
     this.vdomNode = vdomNode;
+    this.renderedComponent = null;
+    this.instance = null;
   }
 
   getInstance() {
@@ -42,12 +40,10 @@ class CustomComponent {
 }
 
 class DomComponent {
-  vdomNode = null;
-  renderedChildren = [];
-  domNode = null;
-
   constructor(vdomNode) {
     this.vdomNode = vdomNode;
+    this.renderedChildren = [];
+    this.domNode = null;
   }
 
   getInstance() {

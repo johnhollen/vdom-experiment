@@ -14,11 +14,9 @@ export function markup(elementType, props, children) {
 }
 
 export class StatefulComponent {
-  state = {};
-  props = null; // Set by renderer
-
   constructor(props) {
     this.props = props;
+    this.state = {};
   }
 
   setState(newState) {
