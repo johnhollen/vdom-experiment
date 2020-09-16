@@ -17,6 +17,7 @@ class CustomComponent {
     this.vdomNode = vdomNode;
     this.renderedComponent = null;
     this.instance = null;
+    this.componentName = vdomNode.elementType.name;
   }
 
   getInstance() {
