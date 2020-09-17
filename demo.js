@@ -9,10 +9,16 @@ function CustomComponent(props) {
 
 class TestClassComponent extends StatefulComponent {
   render() {
+    const { titleColor } = this.props;
+
     return markup(
       'div',
       { style: 'border: 1px solid #aaa; border-radius: 4px; padding: 10px;' },
-      markup('h1', null, markup('text', null, 'I am a Class Component!')),
+      markup(
+        'h1',
+        { style: `color: ${titleColor}` },
+        markup('text', null, 'I am a Class Component!'),
+      ),
     );
   }
 }
@@ -25,7 +31,7 @@ function MainComponent() {
       markup('text', null, 'some custom children!'),
     ),
     markup('p', null, markup('text', null, 'I am a simple p tag!')),
-    markup(TestClassComponent),
+    markup(TestClassComponent, { titleColor: 'salmon' }),
   ]);
 }
 
