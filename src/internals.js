@@ -29,10 +29,9 @@ class CustomComponent {
 
     let renderedVdomNode;
     if (isClassComponent(elementType)) {
-      const instance = new elementType(props);
-      instance.props = props;
-      this.instance = instance;
-      renderedVdomNode = instance.render();
+      this.instance = new elementType(props);
+      this.instance.props = props;
+      renderedVdomNode = this.instance.render();
     } else {
       this.instance = null;
       renderedVdomNode = elementType(props);
@@ -57,33 +56,31 @@ class DomComponent {
   mount() {
     const { elementType, props } = this.vdomNode;
 
-    let children = props.children || [];
-    if (!Array.isArray(children)) {
-      children = [children];
-    }
+    const children = Array.isArray(props.children) ? props.children : [props.children];
 
     if (elementType === 'text') {
-      const domNode = document.createTextNode(children[0]);
-      this.domNode = domNode;
-      return domNode;
+      this.domNode = document.createTextNode(children[0]);
+      return this.domNode;
     }
 
-    const domNode = document.createElement(elementType);
-    this.domNode = domNode;
+    this.domNode = document.createElement(elementType);
 
     Object.keys(props).forEach((key) => {
       if (key !== 'children') {
-        domNode.setAttribute(key, props[key]);
+        if (key.startsWith('on')) {
+          this.domNode[key] = props[key];
+        } else {
+          this.domNode.setAttribute(key, props[key]);
+        }
       }
     });
 
-    const renderedChildren = children.map((child) => createComponent(child));
-    this.renderedChildren = renderedChildren;
-
-    renderedChildren.forEach((renderedChild) => {
-      domNode.appendChild(renderedChild.mount());
+    this.renderedChildren = children.map((child) => {
+      const renderedChild = createComponent(child);
+      this.domNode.appendChild(renderedChild.mount());
+      return renderedChild;
     });
 
-    return domNode;
+    return this.domNode;
   }
 }
