@@ -1,10 +1,20 @@
-import { renderTree, markup } from './src/miniFrameWorkVDOM.js';
+import { renderTree, markup, StatefulComponent } from './src/miniFrameWorkVDOM.js';
 
 function CustomComponent(props) {
   return markup('div', { style: 'color: blue;', title: 'I am a title' }, [
     markup('text', null, `Hello, ${props.name}!`),
     markup('p', null, props.children),
   ]);
+}
+
+class TestClassComponent extends StatefulComponent {
+  render() {
+    return markup(
+      'div',
+      { style: 'border: 1px solid #aaa; border-radius: 4px; padding: 10px;' },
+      markup('h1', null, markup('text', null, 'I am a Class Component!')),
+    );
+  }
 }
 
 function MainComponent() {
@@ -15,6 +25,7 @@ function MainComponent() {
       markup('text', null, 'some custom children!'),
     ),
     markup('p', null, markup('text', null, 'I am a simple p tag!')),
+    markup(TestClassComponent),
   ]);
 }
 

@@ -29,7 +29,10 @@ class CustomComponent {
 
     let renderedVdomNode;
     if (isClassComponent(elementType)) {
-      // TODO: Handle class components
+      const instance = new elementType(props);
+      instance.props = props;
+      this.instance = instance;
+      renderedVdomNode = instance.render();
     } else {
       this.instance = null;
       renderedVdomNode = elementType(props);
