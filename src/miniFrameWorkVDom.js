@@ -22,6 +22,12 @@ export class StatefulComponent {
   setState(newState) {
     this.state = { ...this.state, ...newState };
   }
+
+  onUnmount() {}
+
+  onMount() {}
+
+  render() {}
 }
 
 StatefulComponent.prototype.isStatefulComponent = true;

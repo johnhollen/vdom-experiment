@@ -12,6 +12,10 @@ class TestClassComponent extends StatefulComponent {
     console.log('You clicked the button');
   }
 
+  onMount() {
+    console.log('Running onMount');
+  }
+
   render() {
     const { titleColor } = this.props;
 

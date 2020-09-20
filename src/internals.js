@@ -31,6 +31,7 @@ class CustomComponent {
     if (isClassComponent(elementType)) {
       this.instance = new elementType(props);
       this.instance.props = props;
+      this.instance.onMount();
       renderedVdomNode = this.instance.render();
     } else {
       this.instance = null;
