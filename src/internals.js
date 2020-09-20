@@ -41,6 +41,13 @@ class CustomComponent {
     this.renderedComponent = createComponent(renderedVdomNode);
     return this.renderedComponent.mount();
   }
+
+  unmount() {
+    if (this.instance) {
+      this.instance.onUnmount();
+    }
+    this.renderedComponent.unmount();
+  }
 }
 
 class DomComponent {
@@ -83,5 +90,11 @@ class DomComponent {
     });
 
     return this.domNode;
+  }
+
+  unmount() {
+    this.renderedChildren.forEach((renderedChild) => {
+      renderedChild.unmount();
+    });
   }
 }
