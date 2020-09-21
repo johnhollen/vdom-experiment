@@ -8,31 +8,36 @@ function CustomComponent(props) {
 }
 
 class TestClassComponent extends StatefulComponent {
-  onClick() {
-    console.log('You clicked the button');
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      bigTitle: true,
+    };
+
+    this.onClick = this.onClick.bind(this);
   }
 
-  onMount() {
-    console.log('Running onMount');
+  onClick() {
+    this.setState({
+      bigTitle: !this.state.bigTitle,
+    });
   }
 
   render() {
     const { titleColor } = this.props;
+    const { bigTitle } = this.state;
 
     return markup(
       'div',
       { style: 'border: 1px solid #aaa; border-radius: 4px; padding: 10px;' },
       [
         markup(
-          'h1',
+          bigTitle ? 'h1' : 'h3',
           { style: `color: ${titleColor}` },
           markup('text', null, 'I am a Class Component!'),
         ),
-        markup(
-          'button',
-          { onclick: () => this.onClick() },
-          markup('text', null, 'Click Me!'),
-        ),
+        markup('button', { onclick: this.onClick }, markup('text', null, 'Toggle Title')),
       ],
     );
   }

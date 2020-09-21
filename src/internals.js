@@ -153,7 +153,7 @@ class DomComponent {
           const prevDomNode = prevChild.getDomNode();
           prevChild.unmount();
 
-          const nextChild = createComponent(nextChild);
+          const nextChild = createComponent(nextVdomChild);
           const nextDomNode = nextChild.mount();
           nextRenderedChildren.push(nextChild);
           updateQueue.push({ type: 'REPLACE', prevDomNode, nextDomNode });
@@ -171,6 +171,7 @@ class DomComponent {
     }
 
     this.renderedChildren = nextRenderedChildren;
+    this.vdomNode = nextVdomNode;
     this.applyUpdates(updateQueue);
   }
 
@@ -197,6 +198,7 @@ class DomComponent {
   }
 
   applyUpdates(updateQueue) {
+    console.log('UpdateQueue >>', updateQueue);
     updateQueue.forEach((update) => {
       switch (update.type) {
         case 'ADD': {
