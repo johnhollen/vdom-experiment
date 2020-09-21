@@ -17,10 +17,12 @@ export class StatefulComponent {
   constructor(props) {
     this.props = props;
     this.state = {};
+    this._internalInstance = null;
   }
 
   setState(newState) {
     this.state = { ...this.state, ...newState };
+    this._internalInstance.stateChanged();
   }
 
   onUnmount() {}

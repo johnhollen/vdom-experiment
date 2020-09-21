@@ -38,6 +38,39 @@ class TestClassComponent extends StatefulComponent {
   }
 }
 
+class TestClassComponent2 extends StatefulComponent {
+  constructor(props) {
+    super(props);
+    this.state = { typedText: '' };
+
+    this.onType = this.onType.bind(this);
+  }
+
+  onType(event) {
+    const typedText = event.target.value;
+
+    this.setState({
+      typedText,
+    });
+  }
+
+  render() {
+    const { typedText } = this.state;
+
+    return markup(
+      'div',
+      {
+        style:
+          'margin-top: 10px;border: 1px solid #aaa; border-radius: 4px; padding: 10px;',
+      },
+      [
+        markup('input', { type: 'text', oninput: this.onType }),
+        markup('p', null, markup('text', null, typedText)),
+      ],
+    );
+  }
+}
+
 function MainComponent() {
   return markup('div', null, [
     markup(
@@ -47,6 +80,7 @@ function MainComponent() {
     ),
     markup('p', null, markup('text', null, 'I am a simple p tag!')),
     markup(TestClassComponent, { titleColor: 'salmon' }),
+    markup(TestClassComponent2),
   ]);
 }
 
