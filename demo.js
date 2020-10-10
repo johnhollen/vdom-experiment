@@ -1,92 +1,81 @@
 import { renderTree, markup, StatefulComponent } from './src/miniFrameWorkVDOM.js';
 
-function CustomComponent(props) {
-  return markup('div', { style: 'color: steelblue;', title: 'I am a title' }, [
-    markup('text', null, `Hello, ${props.name}!`),
-    markup('p', null, props.children),
-  ]);
+function Button({ onClick, children }) {
+  return markup(
+    'button',
+    {
+      style:
+        'background: salmon; color: white; border-radius: 4px; border: none; padding: 10px; font-size: 14px;',
+      onclick: onClick,
+    },
+    children,
+  );
 }
 
-class TestClassComponent extends StatefulComponent {
+class ClassComponent extends StatefulComponent {
   constructor(props) {
     super(props);
-
     this.state = {
       bigTitle: true,
     };
-
-    this.onClick = this.onClick.bind(this);
+    this.toggleTitle = this.toggleTitle.bind(this);
   }
 
-  onClick() {
+  toggleTitle() {
     this.setState({
       bigTitle: !this.state.bigTitle,
     });
   }
 
   render() {
-    const { titleColor } = this.props;
     const { bigTitle } = this.state;
 
-    return markup(
-      'div',
-      { style: 'border: 1px solid #aaa; border-radius: 4px; padding: 10px;' },
-      [
-        markup(
-          bigTitle ? 'h1' : 'h3',
-          { style: `color: ${titleColor}` },
-          markup('text', null, 'I am a Class Component!'),
-        ),
-        markup('button', { onclick: this.onClick }, markup('text', null, 'Toggle Title')),
-      ],
-    );
+    return markup(bigTitle ? 'h1' : 'h3', null, [
+      markup('text', null, 'Title'),
+      markup(Button, { onClick: this.toggleTitle }, markup('text', null, 'Toggle')),
+    ]);
   }
 }
 
-class TestClassComponent2 extends StatefulComponent {
+function BigTitle() {
+  return markup('h1', null, markup('text', null, 'I am a custom h1 component'));
+}
+
+function SmallTitle() {
+  return markup('h3', null, markup('text', null, 'I am a custom h3 component'));
+}
+
+function Title({ bigTitle }) {
+  return markup(bigTitle ? BigTitle : SmallTitle);
+}
+
+class ClassComponentCustom extends StatefulComponent {
   constructor(props) {
     super(props);
-    this.state = { typedText: '' };
-
-    this.onType = this.onType.bind(this);
+    this.state = {
+      bigTitle: true,
+    };
+    this.toggleTitle = this.toggleTitle.bind(this);
   }
 
-  onType(event) {
-    const typedText = event.target.value;
-
+  toggleTitle() {
     this.setState({
-      typedText,
+      bigTitle: !this.state.bigTitle,
     });
   }
 
   render() {
-    const { typedText } = this.state;
+    const { bigTitle } = this.state;
 
-    return markup(
-      'div',
-      {
-        style:
-          'margin-top: 10px;border: 1px solid #aaa; border-radius: 4px; padding: 10px;',
-      },
-      [
-        markup('input', { type: 'text', oninput: this.onType }),
-        markup('p', null, markup('text', null, typedText)),
-      ],
-    );
+    return markup('div', null, [
+      markup(Title, { bigTitle }),
+      markup(Button, { onClick: this.toggleTitle }, markup('text', null, 'Toggle')),
+    ]);
   }
 }
 
 function MainComponent() {
-  return markup('div', null, [
-    markup(
-      CustomComponent,
-      { name: 'Mister Smith' },
-      markup('text', null, 'some custom children!'),
-    ),
-    markup('p', null, markup('text', null, 'I am a simple p tag!')),
-    markup(TestClassComponent, { titleColor: 'salmon' }),
-    markup(TestClassComponent2),
-  ]);
+  return markup('div', null, [markup(ClassComponent), markup(ClassComponentCustom)]);
 }
 
 const start = Date.now();

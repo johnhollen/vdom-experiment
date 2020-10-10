@@ -54,11 +54,45 @@ class CustomComponent {
   }
 
   update(nextVdomNode) {
-    console.log(nextVdomNode);
+    const prevProps = this.vdomNode.props;
+    const prevRenderedComponent = this.renderedComponent;
+    const prevVdomNode = prevRenderedComponent.vdomNode;
+    const nextProps = nextVdomNode.props;
+
+    const nextElementType = nextVdomNode.elementType;
+
+    let nextRenderedVdomNode;
+    if (isClassComponent(nextElementType)) {
+      // Add component will update call on class comonent that updates
+      this.instance.props = nextProps;
+      nextRenderedVdomNode = this.instance.render();
+    } else {
+      nextRenderedVdomNode = nextElementType(nextProps);
+    }
+
+    this.diffAndUpdateRendered(prevVdomNode, nextRenderedVdomNode);
+  }
+
+  diffAndUpdateRendered(prevVdomNode, nextVdomNode) {
+    const prevRenderedComponent = this.renderedComponent;
+
+    if (prevVdomNode.elementType === nextVdomNode.elementType) {
+      prevRenderedComponent.update(nextVdomNode);
+      return;
+    }
+
+    const prevNode = prevRenderedComponent.getDomNode();
+    prevRenderedComponent.unmount();
+
+    const nextRenderedComponent = createComponent(nextVdomNode);
+    const nextNode = nextRenderedComponent.mount();
+
+    this.renderedComponent = nextRenderedComponent;
+    prevNode.parentNode.replaceChild(nextNode, prevNode);
   }
 
   stateChanged() {
-    this.renderedComponent.update(this.instance.render());
+    this.diffAndUpdateRendered(this.renderedComponent.vdomNode, this.instance.render());
   }
 
   unmount() {
