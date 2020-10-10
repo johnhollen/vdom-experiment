@@ -1,81 +1,112 @@
 import { renderTree, markup, StatefulComponent } from './src/miniFrameWorkVDOM.js';
+import { pokemon } from './sampleData.js';
 
 function Button({ onClick, children }) {
-  return markup(
-    'button',
-    {
-      style:
-        'background: salmon; color: white; border-radius: 4px; border: none; padding: 10px; font-size: 14px;',
-      onclick: onClick,
-    },
-    children,
-  );
+  return markup('button', { class: 'button', onclick: onClick }, children);
 }
 
-class ClassComponent extends StatefulComponent {
+class PokeListItem extends StatefulComponent {
   constructor(props) {
     super(props);
     this.state = {
-      bigTitle: true,
+      expanded: false,
     };
-    this.toggleTitle = this.toggleTitle.bind(this);
+
+    this.toggleExpanded = this.toggleExpanded.bind(this);
   }
 
-  toggleTitle() {
+  toggleExpanded() {
     this.setState({
-      bigTitle: !this.state.bigTitle,
+      expanded: !this.state.expanded,
     });
   }
 
-  render() {
-    const { bigTitle } = this.state;
+  renderExpanded() {
+    const { expanded } = this.state;
+    const { pokemon } = this.props;
 
-    return markup(bigTitle ? 'h1' : 'h3', null, [
-      markup('text', null, 'Title'),
-      markup(Button, { onClick: this.toggleTitle }, markup('text', null, 'Toggle')),
+    if (!expanded) {
+      return null;
+    }
+
+    const stats = Object.keys(pokemon.base).map((key) =>
+      markup('div', { class: 'stat' }, [
+        markup('strong', null, markup('text', null, `${key}: `)),
+        markup('text', null, pokemon.base[key]),
+      ]),
+    );
+
+    return markup('div', { class: 'expanded-list-item' }, [
+      markup('div', { class: 'stat' }, [
+        markup('strong', null, markup('text', null, 'Type: ')),
+        markup('text', null, pokemon.type.join(', ')),
+      ]),
+      ...stats,
+    ]);
+  }
+
+  render() {
+    const { pokemon } = this.props;
+    const { expanded } = this.state;
+    return markup('li', null, [
+      markup('div', { class: 'poke-list-item' }, [
+        markup('span', null, markup('text', null, pokemon.name)),
+        markup(
+          Button,
+          { onClick: this.toggleExpanded },
+          markup('text', null, expanded ? 'Collapse' : 'Expand'),
+        ),
+      ]),
+      this.renderExpanded(),
     ]);
   }
 }
 
-function BigTitle() {
-  return markup('h1', null, markup('text', null, 'I am a custom h1 component'));
-}
-
-function SmallTitle() {
-  return markup('h3', null, markup('text', null, 'I am a custom h3 component'));
-}
-
-function Title({ bigTitle }) {
-  return markup(bigTitle ? BigTitle : SmallTitle);
-}
-
-class ClassComponentCustom extends StatefulComponent {
+class Pokedex extends StatefulComponent {
   constructor(props) {
     super(props);
     this.state = {
-      bigTitle: true,
+      filterString: '',
     };
-    this.toggleTitle = this.toggleTitle.bind(this);
+
+    this.onFilterChange = this.onFilterChange.bind(this);
   }
 
-  toggleTitle() {
+  onFilterChange(event) {
     this.setState({
-      bigTitle: !this.state.bigTitle,
+      filterString: event.target.value,
     });
   }
 
   render() {
-    const { bigTitle } = this.state;
+    const { pokemons } = this.props;
+    const { filterString } = this.state;
+
+    const filteredPokemon = filterString
+      ? pokemons.filter((pokemon) =>
+          pokemon.name.toLowerCase().includes(filterString.toLocaleLowerCase()),
+        )
+      : pokemon;
+
+    const renderedListItems = filteredPokemon.map((pokemon) =>
+      markup(PokeListItem, { pokemon }),
+    );
 
     return markup('div', null, [
-      markup(Title, { bigTitle }),
-      markup(Button, { onClick: this.toggleTitle }, markup('text', null, 'Toggle')),
+      markup('h1', null, markup('text', null, 'Pokedex')),
+      markup('input', {
+        type: 'text',
+        class: 'input',
+        placeholder: 'Filter list',
+        oninput: this.onFilterChange,
+      }),
+      markup('ul', null, renderedListItems),
     ]);
   }
 }
 
 function MainComponent() {
-  return markup('div', null, [markup(ClassComponent), markup(ClassComponentCustom)]);
+  return markup('div', null, markup(Pokedex, { pokemons: pokemon }));
 }
 
 const start = Date.now();
